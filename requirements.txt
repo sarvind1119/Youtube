@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+google-api-python-client
+pydantic
+python-dotenv
+pandas
+openpyxl  # For Excel
+jinja2
+python-multipart  # for form support
