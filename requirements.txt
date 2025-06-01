@@ -7,3 +7,4 @@ pandas
 openpyxl  # For Excel
 jinja2
 python-multipart  # for form support
+nltk

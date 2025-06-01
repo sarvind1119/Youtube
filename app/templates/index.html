@@ -1,17 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>YouTube Comment Exporter</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="container py-5">
 
-  <h1 class="mb-4">YouTube Comment Exporter</h1>
+  <h1 class="mb-4">📊 YouTube Comment Exporter & Analyzer</h1>
 
   <form method="post" action="/export">
     <div class="mb-3">
       <label for="video_url" class="form-label">YouTube Video URL</label>
-      <input type="url" class="form-control" id="video_url" name="video_url" required>
+      <input type="url" class="form-control" id="video_url" name="video_url" required value="{{ video_url or '' }}">
     </div>
 
     <div class="mb-3">
@@ -23,8 +27,57 @@
       </select>
     </div>
 
-    <button type="submit" class="btn btn-primary">Download Comments</button>
+    <div class="mb-3">
+      <label for="max_results" class="form-label">Max Comments to Fetch (leave blank for all)</label>
+      <input type="number" class="form-control" id="max_results" name="max_results" min="1" value="{{ max_results or '' }}">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Analyze</button>
   </form>
+
+  {% if sentiment %}
+  <hr>
+  <h4 class="mt-5">📈 Comment Sentiment Overview</h4>
+  <p>Total Comments Analyzed: {{ total_comments }}</p>
+
+  <canvas id="sentimentChart" width="400" height="400"></canvas>
+
+  <div class="mt-4">
+    <h5>Download Comments:</h5>
+    <a href="{{ download_links.csv }}" class="btn btn-outline-primary btn-sm me-2">CSV</a>
+    <a href="{{ download_links.xlsx }}" class="btn btn-outline-success btn-sm me-2">Excel</a>
+    <a href="{{ download_links.json }}" class="btn btn-outline-dark btn-sm">JSON</a>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('sentimentChart').getContext('2d');
+    const sentimentData = {
+      labels: ['Positive', 'Negative', 'Neutral'],
+      datasets: [{
+        data: [
+          {{ sentiment.Positive }},
+          {{ sentiment.Negative }},
+          {{ sentiment.Neutral }}
+        ],
+        backgroundColor: ['#4CAF50', '#F44336', '#FFC107']
+      }]
+    };
+
+    new Chart(ctx, {
+      type: 'pie',
+      data: sentimentData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+  </script>
+  {% endif %}
 
 </body>
 </html>
+<!-- This is the main HTML template for the YouTube Comment Exporter application.
+     It includes a form for inputting the video URL and options for exporting comments,
+     as well as displaying sentiment analysis results in a pie chart. -->
