@@ -101,7 +101,7 @@ graph TD
 
 **3. Exported CSV Sample**
 
-![CSV Output](screenshots/csvfile.jpeg)
+![CSV Output](screenshots/csvfile.jpg)
 
 ---
 
